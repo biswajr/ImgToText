@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ImgToText — OCR Extractor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="card">
+        <header class="card-header">
+          <p class="badge">OCR WORKSPACE</p>
+          <h1>Image to Text Extractor</h1>
+          <p class="subtitle">
+            Upload an image, tune OCR sensitivity, and extract readable text in seconds.
+          </p>
+        </header>
+
+        <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Upload image">
+          <input id="fileInput" type="file" accept="image/*" hidden />
+          <div class="drop-zone-content">
+            <p class="drop-title">Drag & drop an image here</p>
+            <p class="drop-sub">or click to browse files</p>
+          </div>
+          <img id="preview" alt="Uploaded preview" class="preview hidden" />
+        </div>
+
+        <section class="controls">
+          <div class="control-row">
+            <label for="sensitivity">OCR Sensitivity</label>
+            <span id="sensitivityValue">55</span>
+          </div>
+          <input id="sensitivity" type="range" min="0" max="100" value="55" />
+          <label class="checkbox-row" for="enhanceToggle">
+            <input id="enhanceToggle" type="checkbox" checked />
+            <span>Enable contrast enhancement for difficult scans</span>
+          </label>
+          <p class="hint">Tip: Increase sensitivity for faded text, lower it for noisy backgrounds.</p>
+        </section>
+
+        <div class="actions">
+          <button id="extractBtn" class="btn primary" disabled>Extract Text</button>
+          <button id="copyBtn" class="btn" disabled>Copy Text</button>
+          <button id="clearBtn" class="btn ghost" disabled>Clear</button>
+        </div>
+
+        <div class="status-row">
+          <p id="statusText" class="status">No image selected.</p>
+          <div id="loader" class="loader hidden" aria-hidden="true"></div>
+        </div>
+
+        <section class="result-wrap">
+          <label for="result" class="result-label">Extracted Text</label>
+          <textarea id="result" placeholder="Recognized text will appear here..." readonly></textarea>
+        </section>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
