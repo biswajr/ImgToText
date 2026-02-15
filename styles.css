@@ -1,6 +1,7 @@
 :root {
   color-scheme: dark;
   --bg: #050507;
+  --panel: #0d0d12;
   --panel-border: #1f1f2a;
   --text: #f3f3f7;
   --muted: #a0a0b8;
@@ -30,7 +31,7 @@ body {
 }
 
 .card {
-  width: min(960px, 100%);
+  width: min(900px, 100%);
   background: linear-gradient(145deg, #11111a, #0a0a10);
   border: 1px solid var(--panel-border);
   border-radius: 20px;
@@ -38,17 +39,18 @@ body {
   box-shadow: var(--shadow);
 }
 
+.card-header h1 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
 .badge {
+  display: inline-block;
   margin: 0;
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   font-weight: 700;
   color: #c7bbff;
-}
-
-.card-header h1 {
-  margin: 0.25rem 0 0;
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
 }
 
 .subtitle {
@@ -99,49 +101,6 @@ body {
   border-radius: 12px;
 }
 
-.controls {
-  margin-top: 1rem;
-  border: 1px solid #2b2b3a;
-  background: #0a0a12;
-  border-radius: 12px;
-  padding: 0.9rem;
-}
-
-.control-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.4rem;
-}
-
-.control-row label {
-  font-weight: 600;
-}
-
-#sensitivityValue {
-  color: #c7bbff;
-  font-weight: 700;
-}
-
-input[type="range"] {
-  width: 100%;
-  accent-color: var(--accent);
-}
-
-.checkbox-row {
-  margin-top: 0.7rem;
-  display: flex;
-  gap: 0.55rem;
-  align-items: center;
-  color: var(--muted);
-}
-
-.hint {
-  margin: 0.65rem 0 0;
-  color: #8f8fa8;
-  font-size: 0.9rem;
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -157,6 +116,7 @@ input[type="range"] {
   padding: 0.7rem 1rem;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
 }
 
 .btn:hover:not(:disabled) {

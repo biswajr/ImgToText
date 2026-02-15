@@ -7,13 +7,8 @@ const clearBtn = document.getElementById("clearBtn");
 const result = document.getElementById("result");
 const statusText = document.getElementById("statusText");
 const loader = document.getElementById("loader");
-const sensitivityInput = document.getElementById("sensitivity");
-const sensitivityValue = document.getElementById("sensitivityValue");
-const enhanceToggle = document.getElementById("enhanceToggle");
 
 let selectedFile = null;
-
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const setStatus = (message) => {
   statusText.textContent = message;
@@ -49,68 +44,6 @@ const renderPreview = (file) => {
   reader.readAsDataURL(file);
 };
 
-const readFileAsDataURL = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ""));
-    reader.onerror = () => reject(new Error("Unable to read image"));
-    reader.readAsDataURL(file);
-  });
-
-const createImage = (src) =>
-  new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("Unable to decode image"));
-    image.src = src;
-  });
-
-const canvasToBlob = (canvas) =>
-  new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        reject(new Error("Failed to process image"));
-        return;
-      }
-      resolve(blob);
-    }, "image/png");
-  });
-
-const buildOcrInput = async (file, sensitivity, shouldEnhance) => {
-  if (!shouldEnhance) {
-    return file;
-  }
-
-  const imageSrc = await readFileAsDataURL(file);
-  const image = await createImage(imageSrc);
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) {
-    throw new Error("Unable to create canvas context");
-  }
-
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
-  const contrast = 1 + (sensitivity - 50) / 65;
-  const threshold = clamp(168 - sensitivity * 0.85, 80, 190);
-
-  for (let i = 0; i < data.length; i += 4) {
-    const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
-    const boosted = clamp((gray - 128) * contrast + 128, 0, 255);
-    const binary = boosted >= threshold ? 255 : 0;
-    data[i] = binary;
-    data[i + 1] = binary;
-    data[i + 2] = binary;
-  }
-
-  ctx.putImageData(imageData, 0, 0);
-  return canvasToBlob(canvas);
-};
-
 const handleFile = (file) => {
   if (!file || !file.type.startsWith("image/")) {
     setStatus("Please select a valid image file.");
@@ -123,10 +56,6 @@ const handleFile = (file) => {
   setStatus(`Ready to extract text from ${file.name}.`);
   setBusy(false);
 };
-
-sensitivityInput.addEventListener("input", () => {
-  sensitivityValue.textContent = sensitivityInput.value;
-});
 
 dropZone.addEventListener("click", () => fileInput.click());
 dropZone.addEventListener("keydown", (event) => {
@@ -169,14 +98,11 @@ extractBtn.addEventListener("click", async () => {
 
   try {
     setBusy(true);
-    setStatus("Preparing image for OCR...");
-
-    const sensitivity = Number(sensitivityInput.value);
-    const ocrInput = await buildOcrInput(selectedFile, sensitivity, enhanceToggle.checked);
+    setStatus("Extracting text... this can take a few seconds.");
 
     const {
       data: { text },
-    } = await Tesseract.recognize(ocrInput, "eng", {
+    } = await Tesseract.recognize(selectedFile, "eng", {
       logger: (m) => {
         if (m.status === "recognizing text") {
           const pct = Math.round((m.progress || 0) * 100);
@@ -189,9 +115,9 @@ extractBtn.addEventListener("click", async () => {
     result.value = cleaned;
     copyBtn.disabled = !cleaned;
     clearBtn.disabled = false;
-    setStatus(cleaned ? "Text extracted successfully." : "No readable text found. Try increasing sensitivity.");
+    setStatus(cleaned ? "Text extracted successfully." : "No readable text found.");
   } catch (error) {
-    setStatus("Unable to extract text from this image. Adjust sensitivity and try again.");
+    setStatus("Unable to extract text from this image. Try another image.");
     console.error(error);
   } finally {
     setBusy(false);

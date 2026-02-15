@@ -16,10 +16,11 @@
     <main class="app-shell">
       <section class="card">
         <header class="card-header">
-          <p class="badge">OCR WORKSPACE</p>
+          <p class="badge">OCR TOOL</p>
           <h1>Image to Text Extractor</h1>
           <p class="subtitle">
-            Upload an image, tune OCR sensitivity, and extract readable text in seconds.
+            Upload an image and instantly extract its text with a sleek, dark
+            interface.
           </p>
         </header>
 
@@ -31,19 +32,6 @@
           </div>
           <img id="preview" alt="Uploaded preview" class="preview hidden" />
         </div>
-
-        <section class="controls">
-          <div class="control-row">
-            <label for="sensitivity">OCR Sensitivity</label>
-            <span id="sensitivityValue">55</span>
-          </div>
-          <input id="sensitivity" type="range" min="0" max="100" value="55" />
-          <label class="checkbox-row" for="enhanceToggle">
-            <input id="enhanceToggle" type="checkbox" checked />
-            <span>Enable contrast enhancement for difficult scans</span>
-          </label>
-          <p class="hint">Tip: Increase sensitivity for faded text, lower it for noisy backgrounds.</p>
-        </section>
 
         <div class="actions">
           <button id="extractBtn" class="btn primary" disabled>Extract Text</button>
@@ -58,7 +46,11 @@
 
         <section class="result-wrap">
           <label for="result" class="result-label">Extracted Text</label>
-          <textarea id="result" placeholder="Recognized text will appear here..." readonly></textarea>
+          <textarea
+            id="result"
+            placeholder="Recognized text will appear here..."
+            readonly
+          ></textarea>
         </section>
       </section>
     </main>
